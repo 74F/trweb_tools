@@ -1,0 +1,459 @@
+
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: var(--font-sans); color: var(--color-text-primary); }
+.site-header { padding: 1rem 1.5rem; border-bottom: 0.5px solid var(--color-border-tertiary); display: flex; align-items: center; justify-content: space-between; }
+.logo { font-size: 15px; font-weight: 500; display: flex; align-items: center; gap: 8px; }
+.logo i { font-size: 18px; color: var(--color-text-secondary); }
+.nav { display: flex; gap: 4px; }
+.nav-btn { padding: 6px 12px; font-size: 13px; border-radius: var(--border-radius-md); border: none; background: transparent; color: var(--color-text-secondary); cursor: pointer; transition: background 0.12s; }
+.nav-btn:hover { background: var(--color-background-secondary); color: var(--color-text-primary); }
+.nav-btn.active { background: var(--color-background-secondary); color: var(--color-text-primary); font-weight: 500; }
+.tool-grid { display: grid; grid-template-columns: 200px 1fr; min-height: 600px; }
+.sidebar { border-right: 0.5px solid var(--color-border-tertiary); padding: 1rem; }
+.sidebar-label { font-size: 11px; font-weight: 500; color: var(--color-text-tertiary); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 8px; padding: 0 4px; }
+.tool-item { display: flex; align-items: center; gap: 8px; padding: 8px 10px; border-radius: var(--border-radius-md); font-size: 13px; color: var(--color-text-secondary); cursor: pointer; transition: background 0.12s; }
+.tool-item:hover { background: var(--color-background-secondary); color: var(--color-text-primary); }
+.tool-item.active { background: var(--color-background-secondary); color: var(--color-text-primary); font-weight: 500; }
+.tool-item i { font-size: 16px; }
+.tool-badge { margin-left: auto; font-size: 10px; background: var(--color-background-info); color: var(--color-text-info); padding: 2px 6px; border-radius: 99px; }
+
+.main-panel { padding: 1.5rem; display: none; }
+.main-panel.visible { display: block; }
+.panel-title { font-size: 18px; font-weight: 500; margin-bottom: 4px; }
+.panel-sub { font-size: 13px; color: var(--color-text-secondary); margin-bottom: 1.25rem; }
+
+/* 탭 */
+.tabs { display: flex; gap: 0; border-bottom: 0.5px solid var(--color-border-tertiary); margin-bottom: 1.25rem; }
+.tab-btn { padding: 8px 16px; font-size: 13px; border: none; background: transparent; color: var(--color-text-secondary); cursor: pointer; border-bottom: 2px solid transparent; margin-bottom: -0.5px; transition: color 0.12s; }
+.tab-btn:hover { color: var(--color-text-primary); }
+.tab-btn.active { color: var(--color-text-primary); font-weight: 500; border-bottom-color: var(--color-text-primary); }
+.tab-panel { display: none; }
+.tab-panel.visible { display: block; }
+
+.field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 1rem; }
+.field-group { display: flex; flex-direction: column; gap: 6px; }
+.field-label { font-size: 13px; color: var(--color-text-secondary); font-weight: 500; }
+.level-select-wrap { display: flex; align-items: center; gap: 8px; }
+.level-icon { width: 28px; height: 28px; border-radius: 6px; flex-shrink: 0; overflow: hidden; background: var(--color-background-secondary); }
+.level-icon img { width: 100%; height: 100%; object-fit: contain; }
+select { flex: 1; padding: 8px 12px; font-size: 13px; border: 0.5px solid var(--color-border-secondary); border-radius: var(--border-radius-md); background: var(--color-background-primary); color: var(--color-text-primary); outline: none; cursor: pointer; }
+select:focus { border-color: var(--color-border-primary); }
+.pct-wrap { position: relative; }
+.pct-wrap input { width: 100%; padding: 8px 36px 8px 12px; font-size: 13px; border: 0.5px solid var(--color-border-secondary); border-radius: var(--border-radius-md); background: var(--color-background-primary); color: var(--color-text-primary); outline: none; }
+.pct-wrap input:focus { border-color: var(--color-border-primary); }
+.pct-suffix { position: absolute; right: 12px; top: 50%; transform: translateY(-50%); font-size: 13px; color: var(--color-text-tertiary); pointer-events: none; }
+.pct-slider-wrap { display: flex; align-items: center; gap: 8px; margin-top: 4px; }
+.pct-slider-wrap input[type=range] { flex: 1; }
+.pct-slider-val { font-size: 12px; color: var(--color-text-secondary); min-width: 36px; text-align: right; }
+.progress-bar-bg { height: 6px; border-radius: 99px; background: var(--color-background-secondary); margin-top: 6px; overflow: hidden; }
+.progress-bar-fill { height: 100%; border-radius: 99px; background: var(--color-text-info); transition: width 0.2s; }
+input[type="number"] { width: 100%; padding: 8px 12px; font-size: 13px; border: 0.5px solid var(--color-border-secondary); border-radius: var(--border-radius-md); background: var(--color-background-primary); color: var(--color-text-primary); outline: none; }
+input[type="number"]:focus { border-color: var(--color-border-primary); }
+
+/* 포션 그리드 */
+.potion-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 1rem; }
+.potion-card { border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-lg); padding: 12px 10px; display: flex; flex-direction: column; align-items: center; gap: 8px; }
+.potion-img { width: 44px; height: 44px; border-radius: 8px; background: var(--color-background-secondary); display: flex; align-items: center; justify-content: center; overflow: hidden; }
+.potion-img img { width: 100%; height: 100%; object-fit: contain; }
+.potion-img i { font-size: 22px; color: var(--color-text-tertiary); }
+.potion-name { font-size: 11px; color: var(--color-text-secondary); text-align: center; line-height: 1.3; }
+.potion-exp { font-size: 11px; color: var(--color-text-tertiary); text-align: center; }
+.potion-input { width: 100%; padding: 6px 8px; font-size: 13px; border: 0.5px solid var(--color-border-secondary); border-radius: var(--border-radius-md); background: var(--color-background-primary); color: var(--color-text-primary); outline: none; text-align: center; }
+.potion-input:focus { border-color: var(--color-border-primary); }
+
+/* 보유 경험치 합산 표시 */
+.stock-summary { background: var(--color-background-secondary); border-radius: var(--border-radius-md); padding: 10px 14px; margin-bottom: 1rem; display: flex; align-items: center; justify-content: space-between; font-size: 13px; }
+.stock-summary-label { color: var(--color-text-secondary); }
+.stock-summary-val { font-weight: 500; color: var(--color-text-info); }
+
+.calc-btn { padding: 9px 18px; font-size: 13px; font-weight: 500; border-radius: var(--border-radius-md); border: 0.5px solid var(--color-border-secondary); background: var(--color-background-primary); color: var(--color-text-primary); cursor: pointer; transition: background 0.12s, transform 0.1s; display: flex; align-items: center; gap: 6px; }
+.calc-btn:hover { background: var(--color-background-secondary); }
+.calc-btn:active { transform: scale(0.98); }
+
+.result-cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin: 1rem 0 0; }
+.result-card { background: var(--color-background-secondary); border-radius: var(--border-radius-md); padding: 12px 14px; }
+.result-card-label { font-size: 12px; color: var(--color-text-secondary); margin-bottom: 5px; }
+.result-card-value { font-size: 20px; font-weight: 500; }
+.result-card-value.highlight { color: var(--color-text-info); }
+.result-card-value.success { color: var(--color-text-success); }
+.divider { height: 0.5px; background: var(--color-border-tertiary); margin: 1rem 0; }
+.exp-table-wrap { max-height: 180px; overflow-y: auto; border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-md); }
+.exp-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+.exp-table th { position: sticky; top: 0; text-align: left; padding: 7px 10px; font-weight: 500; color: var(--color-text-secondary); border-bottom: 0.5px solid var(--color-border-tertiary); font-size: 12px; background: var(--color-background-primary); }
+.exp-table td { padding: 6px 10px; border-bottom: 0.5px solid var(--color-border-tertiary); }
+.exp-table tr:last-child td { border-bottom: none; }
+.exp-table tr.cur-row td { color: var(--color-text-info); font-weight: 500; }
+.note-box { margin-top: 0.75rem; padding: 10px 12px; border-radius: var(--border-radius-md); background: var(--color-background-secondary); font-size: 12px; color: var(--color-text-secondary); border-left: 2px solid var(--color-border-secondary); }
+.empty-state { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 120px; gap: 8px; color: var(--color-text-tertiary); }
+.empty-state i { font-size: 28px; }
+.empty-state p { font-size: 13px; }
+</style>
+
+<h2 class="sr-only">테일즈런너 계산기 및 도구</h2>
+
+<div class="site-header">
+  <div class="logo"><i class="ti ti-sword" aria-hidden="true"></i>TalesRunner</div>
+  <nav class="nav">
+    <!--<button class="nav-btn active">도구</button>
+    <button class="nav-btn" onclick="alert('미완성 기능입니다.')">+ 도구 추가 ↗</button>-->
+    <button class="nav-btn" onclick="window.location.reload()">새로고침</button>
+  </nav>
+</div>
+
+<div class="tool-grid">
+  
+<aside class="sidebar">
+  <div class="sidebar-label">테일즈런너</div>
+
+  <div class="tool-item active" id="sb-running">
+    <i class="ti ti-run" aria-hidden="true"></i>
+    달리기 경험치 계산기
+    <span class="tool-badge">TR</span>
+  </div>
+
+  <div class="tool-item" onclick="alert('팜 포인트 계산기는 추후 개발할 예정입니다.\r\n예상 개발 시작 시점: 2027.05')">
+    <i class="ti ti-plant"></i>
+    팜 경험치 계산기
+    <span class="tool-badge">TR</span>
+  </div>
+
+  <div class="tool-item" onclick="alert('커플 포인트 계산기는 추후 개발할 예정입니다.\r\n예상 개발 시작 시점: 2027.05')">
+    <i class="ti ti-couple"></i>
+    커플 포인트 계산기
+    <span class="tool-badge">TR</span>
+  </div>
+
+  <div class="tool-item" onclick="alert('확률형 아이템 시뮬레이터는 추후 개발할 예정입니다.\r\n예상 개발 시작 시점: 2027.05')">
+    <i class="ti ti-rngsimulator"></i>
+    확률형 아이템 시뮬레이터
+    <span class="tool-badge">TR</span>
+  </div>
+</aside>
+
+
+  <!-- 달리기 경험치 계산기 -->
+  <main class="main-panel visible" id="panel-stock">
+    <div class="panel-title">달리기 경험치 계산기</div>
+    <div class="panel-sub">보유 경험치와 러닝 포션으로 도달 가능한 레벨을 계산합니다</div>
+
+    <div class="field-row">
+      <div class="field-group">
+        <label class="field-label">현재 레벨</label>
+        <div class="level-select-wrap">
+          <div class="level-icon" id="cur-icon-s"><img src="lvl_1.png" alt="" onerror="this.style.display='none'" /></div>
+          <select id="cur-level-s" onchange="onCurChange('s'); saveInputs();"></select>
+        </div>
+      </div>
+      </div>
+
+    <div class="field-row">
+      <div class="field-group">
+        <label class="field-label">현재 경험치 진행도</label>
+        <div class="pct-wrap">
+          <input type="number" id="cur-pct-s" min="0" max="99.99" step="0.01" value="0" placeholder="0" oninput="onPctInput('s'); saveInputs();" />
+          <span class="pct-suffix">%</span>
+        </div>
+        <div class="pct-slider-wrap">
+          <input type="range" id="cur-pct-slider-s" min="0" max="9999" step="1" value="0" oninput="onSliderInput('s'); saveInputs();" />
+          <span class="pct-slider-val" id="slider-label-s">0.00%</span>
+        </div>
+        <div class="progress-bar-bg"><div class="progress-bar-fill" id="pct-bar-s" style="width:0%"></div></div>
+      </div>
+      <div class="field-group">
+        <label class="field-label">보유 경험치 (낚시 등)</label>
+        <input type="number" id="stock-exp" value="0" min="0" placeholder="0" oninput="updateStockSummary(); saveInputs();" />
+      </div>
+    </div>
+
+    <!-- 포션 -->
+    <div class="field-label" style="margin-bottom:8px;">보유 러닝 포션</div>
+    <div class="potion-grid">
+      <div class="potion-card">
+        <div class="potion-img">
+          <img src="potion_beginner.png" alt="비기너 러닝 포션" onerror="this.style.display='none';this.nextElementSibling.style.display='block'" />
+          <i class="ti ti-flask" aria-hidden="true" style="display:none;"></i>
+        </div>
+        <div class="potion-name">비기너<br>러닝 포션</div>
+        <div class="potion-exp">+1,000,000</div>
+        <input type="number" class="potion-input" id="pot-0" min="0" value="0" placeholder="0" oninput="updateStockSummary(); saveInputs();" />
+      </div>
+      <div class="potion-card">
+        <div class="potion-img">
+          <img src="potion_junior.png" alt="주니어 러닝 포션" onerror="this.style.display='none';this.nextElementSibling.style.display='block'" />
+          <i class="ti ti-flask" aria-hidden="true" style="display:none;"></i>
+        </div>
+        <div class="potion-name">주니어<br>러닝 포션</div>
+        <div class="potion-exp">+5,000,000</div>
+        <input type="number" class="potion-input" id="pot-1" min="0" value="0" placeholder="0" oninput="updateStockSummary(); saveInputs();" />
+      </div>
+      <div class="potion-card">
+        <div class="potion-img">
+          <img src="potion_senior.png" alt="시니어 러닝 포션" onerror="this.style.display='none';this.nextElementSibling.style.display='block'" />
+          <i class="ti ti-flask" aria-hidden="true" style="display:none;"></i>
+        </div>
+        <div class="potion-name">시니어<br>러닝 포션</div>
+        <div class="potion-exp">+10,000,000</div>
+        <input type="number" class="potion-input" id="pot-2" min="0" value="0" placeholder="0" oninput="updateStockSummary(); saveInputs();" />
+      </div>
+      <div class="potion-card">
+        <div class="potion-img">
+          <img src="potion_master.png" alt="마스터 러닝 포션" onerror="this.style.display='none';this.nextElementSibling.style.display='block'" />
+          <i class="ti ti-flask" aria-hidden="true" style="display:none;"></i>
+        </div>
+        <div class="potion-name">마스터<br>러닝 포션</div>
+        <div class="potion-exp">+100,000,000</div>
+        <input type="number" class="potion-input" id="pot-3" min="0" value="0" placeholder="0" oninput="updateStockSummary(); saveInputs();" />
+      </div>
+    </div>
+
+    <div class="stock-summary">
+      <span class="stock-summary-label"><i class="ti ti-stack-2" aria-hidden="true" style="font-size:14px;vertical-align:-2px;margin-right:4px;"></i>총 보유 경험치</span>
+      <span class="stock-summary-val" id="stock-total-display">0</span>
+    </div>
+
+    <button class="calc-btn" onclick="calcStock()">
+      <i class="ti ti-calculator" aria-hidden="true"></i> 계산하기
+    </button>
+
+    <div id="results-s" class="empty-state" style="margin-top:1rem;">
+      <i class="ti ti-package" aria-hidden="true"></i>
+      <p>보유 경험치를 입력하고 계산하기를 누르세요</p>
+    </div>
+
+    <div class="note-box">
+      <i class="ti ti-info-circle" aria-hidden="true" style="font-size:14px;vertical-align:-2px;margin-right:4px;"></i>
+      크로노스·인페르노윙부츠 수치는 실제 게임 데이터 기반입니다. 그 외 레벨(~112)의 수치를 알고 계시면 알려주세요!
+    </div>
+  </main>
+</div>
+
+<script>
+const COLORS = ['빨간','주황','노란','초록','파란','남색','보라'];
+const COLOR_HEX = ['#e85555','#e8943a','#d4b800','#3ab85a','#3a7ae8','#5c4fa0','#9c3ae8'];
+const BADGES = ['병아리','발바닥','양말','슬리퍼','운동화','윙부츠','데빌윙부츠','엔젤윙부츠','파워윙부츠','썬더윙부츠','루나윙부츠','쏠라윙부츠','스텔라윙부츠','갤럭시윙부츠','홀리윙부츠','프라우드윙부츠','크로노스윙부츠','인페르노윙부츠'];
+const TOTAL_LEVELS = BADGES.length * 7;
+const POTION_EXP = [1000000, 5000000, 10000000, 100000000];
+
+const REACH_EXP = [0,25,75,150,250,350,450,600,800,1000,1200,1400,1600,1800,2000,2500,3000,3750,4500,5500,6500,7500,9500,11500,14500,17500,21500,25500,29500,34500,39500,47000,54500,69500,84500,99500,124500,149500,199500,249500,299500,399500,499500,649500,799500,999500,1199500,1433700,1683700,2283700,2883700,3483700,4083700,4683700,5283700,5883700,7983700,10083700,12183700,14283700,16383700,18483700,20583700,25383700,30183700,34983700,39783700,44583700,49383700,54183700,64983700,75783700,86583700,97383700,108183700,118983700,129783700,153783700,177783700,201783700,225783700,249783700,273783700,297783700,345783700,393783700,441783700,489783700,537783700,585783700,633783700,729783700,825783700,921783700,1017783700,1113783700,1209783700,1305783700,1545783700,1785783700,2025783700,2265783700,2505783700,2745783700,2985783700,3585783700,4185783700,4785783700,5385783700,5985783700,6585783700,7185783700,9341518810,10555916255,11928185368,13478849466,15231099897,17211142883,19448591458,25283168896,28569980852,32284078363,36481008550,41223539662,46582599818,52638337794];
+
+function expPerLevel(lv) { return lv >= TOTAL_LEVELS ? 0 : REACH_EXP[lv] - REACH_EXP[lv-1]; }
+
+function getLevelInfo(lv) {
+  const idx = lv - 1;
+  return { badge: BADGES[Math.floor(idx/7)]||'?', color: COLORS[idx%7], hex: COLOR_HEX[idx%7], label: `${COLORS[idx%7]} ${BADGES[Math.floor(idx/7)]||'?'} (Lv.${lv})` };
+}
+
+function buildOptions(sel, selectedLv) {
+  sel.innerHTML = '';
+  for (let lv = 1; lv <= TOTAL_LEVELS; lv++) {
+    const opt = document.createElement('option');
+    opt.value = lv; opt.textContent = getLevelInfo(lv).label;
+    if (lv === selectedLv) opt.selected = true;
+    sel.appendChild(opt);
+  }
+}
+
+function updateIcon(iconEl, lv) { const img = iconEl.querySelector('img'); img.src = `lvl_${lv}.png`; img.style.display = ''; }
+
+function syncPctUI(suffix, pct) {
+  const c = Math.min(99.99, Math.max(0, pct));
+  document.getElementById(`cur-pct-slider-${suffix}`).value = Math.round(c * 100);
+  document.getElementById(`slider-label-${suffix}`).textContent = c.toFixed(2) + '%';
+  document.getElementById(`pct-bar-${suffix}`).style.width = c + '%';
+}
+
+function onCurChange(s) { updateIcon(document.getElementById(`cur-icon-${s}`), parseInt(document.getElementById(`cur-level-${s}`).value)); document.getElementById(`cur-pct-${s}`).value='0'; syncPctUI(s,0); }
+function onGoalChange(s) { updateIcon(document.getElementById(`goal-icon-${s}`), parseInt(document.getElementById(`goal-level-${s}`).value)); }
+function onPctInput(s) { syncPctUI(s, parseFloat(document.getElementById(`cur-pct-${s}`).value)||0); }
+function onSliderInput(s) { const v=parseInt(document.getElementById(`cur-pct-slider-${s}`).value)/100; document.getElementById(`cur-pct-${s}`).value=v.toFixed(2); syncPctUI(s,v); }
+
+/*function showTool(name) {
+  document.getElementById('panel-stock').classList.add('visible');
+}`).classList.toggle('visible', t===name);
+    document.getElementById(`sb-${t}`).classList.toggle('active', t===name);
+  });
+}*/
+
+function updateStockSummary() {
+  const fishExp = parseInt(document.getElementById('stock-exp').value)||0;
+  const potExp  = POTION_EXP.reduce((sum,e,i) => sum + e*(parseInt(document.getElementById(`pot-${i}`).value)||0), 0);
+  document.getElementById('stock-total-display').textContent = (fishExp + potExp).toLocaleString();
+}
+
+function buildResultTable(curLv, goalLv, alreadyInLevel) {
+  let rows = '';
+  for (let lv = curLv; lv < goalLv; lv++) {
+    const needed = expPerLevel(lv);
+    const info = getLevelInfo(lv);
+    const nextInfo = getLevelInfo(lv+1);
+    const isCur = lv === curLv;
+    const dispExp = isCur ? Math.max(0, needed - alreadyInLevel) : needed;
+    rows += `<tr${isCur?' class="cur-row"':''}>
+      <td><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:${info.hex};margin-right:5px;vertical-align:1px;"></span>${info.color} ${info.badge}${isCur?' <span style="font-size:11px;color:var(--color-text-tertiary);">(현재)</span>':''}</td>
+      <td>${dispExp.toLocaleString()}${isCur&&alreadyInLevel>0?` <span style="font-size:11px;color:var(--color-text-tertiary);">/ ${needed.toLocaleString()}</span>`:''}</td>
+      <td>${nextInfo.color} ${nextInfo.badge}</td>
+    </tr>`;
+  }
+  return rows;
+}
+
+function calcRunning() {
+  const curLv  = parseInt(document.getElementById('cur-level-r').value);
+  const goalLv = parseInt(document.getElementById('goal-level-r').value);
+  const pct    = parseFloat(document.getElementById('cur-pct-r').value)||0;
+  const expPerRun = parseInt(document.getElementById('exp-per-run-r').value)||1;
+  if (goalLv <= curLv) { document.getElementById('results-r').innerHTML = '<p style="color:var(--color-text-danger);font-size:13px;margin-top:1rem;"><i class="ti ti-alert-circle"></i> 목표 레벨이 현재 레벨보다 높아야 합니다</p>'; return; }
+  const alreadyInLevel = Math.floor(expPerLevel(curLv) * (pct/100));
+  const myTotalExp = REACH_EXP[curLv-1] + alreadyInLevel;
+  const totalNeeded = Math.max(0, REACH_EXP[goalLv-1] - myTotalExp);
+  const runsNeeded = Math.ceil(totalNeeded / expPerRun);
+  document.getElementById('results-r').innerHTML = `
+    <div class="result-cards">
+      <div class="result-card"><div class="result-card-label">남은 필요 경험치</div><div class="result-card-value highlight">${totalNeeded.toLocaleString()}</div></div>
+      <div class="result-card"><div class="result-card-label">필요 횟수</div><div class="result-card-value">${runsNeeded.toLocaleString()}회</div></div>
+      <div class="result-card"><div class="result-card-label">레벨 구간</div><div class="result-card-value" style="font-size:14px;">Lv.${curLv} → ${goalLv}</div></div>
+    </div>
+    <div class="divider"></div>
+    <div class="exp-table-wrap"><table class="exp-table"><thead><tr><th>현재</th><th>남은 경험치</th><th>다음</th></tr></thead><tbody>${buildResultTable(curLv,goalLv,alreadyInLevel)}</tbody></table></div>`;
+}
+
+function saveInputs() {
+    const data = {
+        level: document.getElementById('cur-level-s').value,
+
+        percent:
+            document.getElementById(
+                'cur-pct-slider-s'
+            ).value,
+
+        stockExp:
+            document.getElementById(
+                'stock-exp'
+            ).value,
+        potions: [
+            document.getElementById('pot-0').value,
+            document.getElementById('pot-1').value,
+            document.getElementById('pot-2').value,
+            document.getElementById('pot-3').value
+        ]
+    };
+
+    localStorage.setItem(
+        'tr_exp_calculator',
+        JSON.stringify(data)
+    );
+}
+
+function loadInputs() {
+    const raw = localStorage.getItem(
+        'tr_exp_calculator'
+    );
+
+    if (!raw) return;
+
+    const data = JSON.parse(raw);
+
+    if (data.level)
+        document.getElementById('cur-level-s').value =
+            data.level;
+
+    if (data.percent !== undefined) {
+
+        document.getElementById(
+            'cur-pct-s'
+        ).value = data.percent/100;
+
+        document.getElementById(
+            'cur-pct-slider-s'
+        ).value = data.percent;
+        onSliderInput('s');
+    }
+
+    if (data.stockExp)
+        document.getElementById('stock-exp').value =
+            data.stockExp;
+    if (data.potions) {
+        for (let i = 0; i < 4; i++) {
+            const el = document.getElementById(`pot-${i}`);
+    
+            if (el && data.potions[i] !== undefined) {
+                el.value = data.potions[i];
+            }
+        }
+    }
+
+    updateStockSummary();
+    calcStock();
+}
+
+function calcStock() {
+  const curLv  = parseInt(document.getElementById('cur-level-s').value);
+  const pct    = parseFloat(document.getElementById('cur-pct-s').value)||0;
+  const fishExp = parseInt(document.getElementById('stock-exp').value)||0;
+  const potExp  = POTION_EXP.reduce((sum,e,i) => sum + e*(parseInt(document.getElementById(`pot-${i}`).value)||0), 0);
+  const stockTotal = fishExp + potExp;
+  const alreadyInLevel = Math.floor(expPerLevel(curLv) * (pct/100));
+  const myTotalExp = REACH_EXP[curLv-1] + alreadyInLevel;
+  const projectedTotal = myTotalExp + stockTotal;
+  let reachLv = curLv;
+  while (reachLv < TOTAL_LEVELS && REACH_EXP[reachLv] <= projectedTotal) reachLv++;
+  const reachInfo = getLevelInfo(reachLv);
+  let reachPct = 100;
+
+  if (reachLv < TOTAL_LEVELS) {
+      const levelStartExp = REACH_EXP[reachLv - 1];
+      const levelNeedExp  = REACH_EXP[reachLv] - REACH_EXP[reachLv - 1];
+
+      reachPct =
+          ((projectedTotal - levelStartExp) / levelNeedExp) * 100;
+
+      reachPct = Math.max(
+          0,
+          Math.min(99.99, reachPct)
+      );
+  }
+  const nextLevelExp = reachLv < TOTAL_LEVELS ? REACH_EXP[reachLv] - projectedTotal : 0;
+  document.getElementById('results-s').innerHTML = `
+    <div class="result-cards">
+      <div class="result-card"><div class="result-card-label">총 보유 경험치</div><div class="result-card-value highlight">${stockTotal.toLocaleString()}</div></div>
+      <div class="result-card"><div class="result-card-label">예상 도달 레벨</div><div class="result-card-value" style="font-size:13px;padding-top:2px;">${reachInfo.color} ${reachInfo.badge}</div></div>
+    <div class="result-card">
+      <div class="result-card-label">
+            진행도
+      </div>
+
+      <div class="result-card-value">
+          ${
+              reachLv >= TOTAL_LEVELS
+              ? '100%'
+              : reachPct.toFixed(2) + '%'
+          }
+        </div>
+      </div>
+      <div class="result-card"><div class="result-card-label">다음 레벨까지</div><div class="result-card-value" style="font-size:16px;">${reachLv >= TOTAL_LEVELS ? '최고 레벨 달성' : nextLevelExp.toLocaleString() + ' EXP'}</div></div>
+    </div>`;
+}
+
+// 초기화
+const curR = document.getElementById('cur-level-r');
+if (curR) buildOptions(curR, 1);
+
+const goalR = document.getElementById('goal-level-r');
+if (goalR) buildOptions(goalR, 8);
+
+const curS = document.getElementById('cur-level-s');
+if (curS) buildOptions(curS, 1);
+
+const curIconR = document.getElementById('cur-icon-r');
+if (curIconR) updateIcon(curIconR, 1);
+
+const curIconS = document.getElementById('cur-icon-s');
+if (curIconS) updateIcon(curIconS, 1);
+
+const goalIconR = document.getElementById('goal-icon-r');
+if (goalIconR) updateIcon(goalIconR, 8);
+
+updateStockSummary();
+loadInputs();
+</script>
