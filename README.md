@@ -1,4 +1,5 @@
 TR Web Calc & Tools
 
-Vibe coded
-Not completed
+Vibe coded & Not completed
+
+Testing some stuff rn
