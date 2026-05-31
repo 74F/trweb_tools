@@ -141,7 +141,7 @@ input[type="number"]:focus { border-color: var(--color-border-primary); }
       <div class="field-group">
         <label class="field-label">현재 레벨</label>
         <div class="level-select-wrap">
-          <div class="level-icon" id="cur-icon-s"><img src="lvl_1.png" alt="" onerror="this.style.display='none'" /></div>
+          <div class="level-icon" id="cur-icon-s"><img src="levels/lv_1.png" alt="" onerror="this.style.display='none'" /></div>
           <select id="cur-level-s" onchange="onCurChange('s'); saveInputs();"></select>
         </div>
       </div>
@@ -171,7 +171,7 @@ input[type="number"]:focus { border-color: var(--color-border-primary); }
     <div class="potion-grid">
       <div class="potion-card">
         <div class="potion-img">
-          <img src="potion_beginner.png" alt="비기너 러닝 포션" onerror="this.style.display='none';this.nextElementSibling.style.display='block'" />
+          <img src="itemimage/all_250_4616.png" alt="비기너 러닝 포션" onerror="this.style.display='none';this.nextElementSibling.style.display='block'" />
           <i class="ti ti-flask" aria-hidden="true" style="display:none;"></i>
         </div>
         <div class="potion-name">비기너<br>러닝 포션</div>
@@ -180,7 +180,7 @@ input[type="number"]:focus { border-color: var(--color-border-primary); }
       </div>
       <div class="potion-card">
         <div class="potion-img">
-          <img src="potion_junior.png" alt="주니어 러닝 포션" onerror="this.style.display='none';this.nextElementSibling.style.display='block'" />
+          <img src="itemimage/all_250_4615.png" alt="주니어 러닝 포션" onerror="this.style.display='none';this.nextElementSibling.style.display='block'" />
           <i class="ti ti-flask" aria-hidden="true" style="display:none;"></i>
         </div>
         <div class="potion-name">주니어<br>러닝 포션</div>
@@ -189,7 +189,7 @@ input[type="number"]:focus { border-color: var(--color-border-primary); }
       </div>
       <div class="potion-card">
         <div class="potion-img">
-          <img src="potion_senior.png" alt="시니어 러닝 포션" onerror="this.style.display='none';this.nextElementSibling.style.display='block'" />
+          <img src="itemimage/all_250_4614.png" alt="시니어 러닝 포션" onerror="this.style.display='none';this.nextElementSibling.style.display='block'" />
           <i class="ti ti-flask" aria-hidden="true" style="display:none;"></i>
         </div>
         <div class="potion-name">시니어<br>러닝 포션</div>
@@ -198,7 +198,7 @@ input[type="number"]:focus { border-color: var(--color-border-primary); }
       </div>
       <div class="potion-card">
         <div class="potion-img">
-          <img src="potion_master.png" alt="마스터 러닝 포션" onerror="this.style.display='none';this.nextElementSibling.style.display='block'" />
+          <img src="itemimage/all_250_4613.png" alt="마스터 러닝 포션" onerror="this.style.display='none';this.nextElementSibling.style.display='block'" />
           <i class="ti ti-flask" aria-hidden="true" style="display:none;"></i>
         </div>
         <div class="potion-name">마스터<br>러닝 포션</div>
@@ -254,7 +254,7 @@ function buildOptions(sel, selectedLv) {
   }
 }
 
-function updateIcon(iconEl, lv) { const img = iconEl.querySelector('img'); img.src = `lvl_${lv}.png`; img.style.display = ''; }
+function updateIcon(iconEl, lv) { const img = iconEl.querySelector('img'); img.src = `levels/lv_${lv}.png`; img.style.display = ''; }
 
 function syncPctUI(suffix, pct) {
   const c = Math.min(99.99, Math.max(0, pct));
@@ -382,7 +382,7 @@ function loadInputs() {
             }
         }
     }
-
+    onCurChange('s');
     updateStockSummary();
     calcStock();
 }
@@ -399,6 +399,7 @@ function calcStock() {
   let reachLv = curLv;
   while (reachLv < TOTAL_LEVELS && REACH_EXP[reachLv] <= projectedTotal) reachLv++;
   const reachInfo = getLevelInfo(reachLv);
+  const reachIcon = `levels/lv_${reachLv}.png`;
   let reachPct = 100;
 
   if (reachLv < TOTAL_LEVELS) {
@@ -417,7 +418,20 @@ function calcStock() {
   document.getElementById('results-s').innerHTML = `
     <div class="result-cards">
       <div class="result-card"><div class="result-card-label">총 보유 경험치</div><div class="result-card-value highlight">${stockTotal.toLocaleString()}</div></div>
-      <div class="result-card"><div class="result-card-label">예상 도달 레벨</div><div class="result-card-value" style="font-size:13px;padding-top:2px;">${reachInfo.color} ${reachInfo.badge}</div></div>
+      <div class="result-card"><div class="result-card-label">예상 도달 레벨</div>
+        <div class="result-card-value" style="font-size:13px;padding-top:2px;">
+      <img
+          src="${reachIcon}"
+          alt=""
+          style="
+              width:24px;
+              height:24px;
+              object-fit:contain;
+          ">
+          ${reachInfo.color}
+          ${reachInfo.badge}
+  </div>
+</div>
     <div class="result-card">
       <div class="result-card-label">
             진행도
